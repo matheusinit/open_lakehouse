@@ -1,0 +1,14 @@
+open_lakehouse:
+  target: dev
+  outputs:
+    dev:
+      type: trino
+      method: none
+      host: "{{ env_var('DBT_TRINO_HOST', 'localhost') }}"
+      port: "{{ env_var('DBT_TRINO_PORT', '8082') | int }}"
+      user: "{{ env_var('DBT_TRINO_USER', 'admin') }}"
+      http_scheme: http
+      database: lakehouse
+      schema: analytics
+      threads: 4
+

@@ -2,3 +2,7 @@
 __pycache__/
 *.py[cod]
 .env
+target/
+dbt_packages/
+logs/
+.user.yml

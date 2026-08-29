@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: stg_subscription_events
+    description: >-
+      Clean, one-to-one representation of raw subscription events,
+      incrementally merged by event_id.
+    columns:
+      - name: event_id
+        description: Unique event identifier.
+        data_tests:
+          - not_null
+          - unique
+      - name: event_type
+        data_tests:
+          - not_null
+      - name: customer_id
+        data_tests:
+          - not_null
+      - name: subscription_id
+        data_tests:
+          - not_null
+      - name: currency
+        data_tests:
+          - not_null
+      - name: event_time
+        data_tests:
+          - not_null
+      - name: recorded_at
+        description: Ingestion watermark used to accept newer event versions.
+        data_tests:
+          - not_null
+

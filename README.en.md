@@ -145,6 +145,26 @@ docker compose up -d sql-editor
 uv run main.py
 ```
 
+## dbt with Trino
+
+The `dbt-trino` adapter is installed through `uv`. The local `profiles.yml`
+connects to Trino without a password and writes models to the `lakehouse`
+catalog.
+
+```sh
+uv sync
+uv run dbt debug --profiles-dir .
+uv run dbt run --profiles-dir .
+uv run dbt test --profiles-dir .
+```
+
+The incremental `stg_subscription_events` model creates a clean, one-to-one
+representation of `lakehouse.raw.subscription_events` at
+`lakehouse.staging.stg_subscription_events`. It normalizes strings and types,
+then merges by `event_id`, inserting new events or updating versions with a
+newer `recorded_at`. Set `DBT_TRINO_HOST`, `DBT_TRINO_PORT`, and
+`DBT_TRINO_USER` in the environment to change the Trino connection.
+
 ## Security notice
 
 This environment does not enable TLS or Trino authentication and publishes

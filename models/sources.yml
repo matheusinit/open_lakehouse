@@ -1,0 +1,19 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Raw Iceberg tables stored in MinIO.
+    database: lakehouse
+    schema: raw
+    tables:
+      - name: subscription_events
+        description: Subscription lifecycle and payment events.
+        columns:
+          - name: event_id
+            data_tests:
+              - not_null
+              - unique
+          - name: event_time
+            data_tests:
+              - not_null
+

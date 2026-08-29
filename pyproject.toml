@@ -4,5 +4,7 @@ version = "0.1.0"
 description = "Open lakehouse project"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+    "dbt-trino==1.10.3",
+]
 
