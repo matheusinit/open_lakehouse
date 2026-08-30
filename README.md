@@ -118,6 +118,14 @@ docker compose exec -T trino trino \
   < infra/trino/iceberg-snapshot-lab.sql
 ```
 
+Carregue ou atualize as tabelas Iceberg de referência `raw.plans` e
+`raw.customers` de forma idempotente com:
+
+```sh
+docker compose exec -T trino trino \
+  < infra/trino/load-reference-data.sql
+```
+
 ## Parar e limpar
 
 Pare os contêineres preservando os dados:
