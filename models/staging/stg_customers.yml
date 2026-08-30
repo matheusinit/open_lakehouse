@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: >-
+      Clean, one-to-one customer records incrementally merged whenever the
+      current raw customers Iceberg snapshot changes.
+    columns:
+      - name: customer_id
+        description: Unique customer identifier and merge key.
+        data_tests:
+          - not_null
+          - unique
+      - name: customer_name
+        data_tests:
+          - not_null
+      - name: email
+        data_tests:
+          - not_null
+          - unique
+      - name: country
+        data_tests:
+          - not_null
+      - name: customer_status
+        data_tests:
+          - not_null
+      - name: created_at
+        data_tests:
+          - not_null
+      - name: updated_at
+        data_tests:
+          - not_null
+      - name: source_snapshot_id
+        description: Iceberg snapshot ID from which this row was last loaded.
+        data_tests:
+          - not_null
+      - name: source_snapshot_committed_at
+        description: Commit timestamp of the source Iceberg snapshot.
+        data_tests:
+          - not_null
+

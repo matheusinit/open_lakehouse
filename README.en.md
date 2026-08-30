@@ -235,6 +235,11 @@ then merges by `event_id`, inserting new events or updating versions with a
 newer `recorded_at`. Set `DBT_TRINO_HOST`, `DBT_TRINO_PORT`, and
 `DBT_TRINO_USER` in the environment to change the Trino connection.
 
+The `stg_customers` model also maintains a one-to-one grain but uses the
+current `raw.customers` Iceberg snapshot as its incremental checkpoint. A load
+runs only when that snapshot changes; `source_snapshot_id` and
+`source_snapshot_committed_at` preserve row-level technical lineage.
+
 ## Security notice
 
 This environment does not enable TLS or Trino authentication and publishes

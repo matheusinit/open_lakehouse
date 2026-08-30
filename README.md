@@ -238,6 +238,11 @@ O modelo incremental `stg_subscription_events` cria uma representação limpa e
 `recorded_at` mais recente. Para alterar o endereço do Trino, configure
 `DBT_TRINO_HOST`, `DBT_TRINO_PORT` e `DBT_TRINO_USER` no ambiente.
 
+O modelo `stg_customers` também mantém grain 1:1, mas usa o snapshot atual da
+tabela Iceberg `raw.customers` como checkpoint incremental. Uma carga só é
+executada quando esse snapshot muda; `source_snapshot_id` e
+`source_snapshot_committed_at` preservam a linhagem técnica de cada linha.
+
 ## Aviso de segurança
 
 Este ambiente não habilita TLS nem autenticação no Trino e publica credenciais
