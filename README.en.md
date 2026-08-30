@@ -20,6 +20,64 @@ CloudBeaver ──SQL/JDBC──> Trino ──HTTP──> Iceberg REST Catalog
 - **Iceberg REST Catalog** coordinates the catalog and table commits.
 - **MinIO** stores Parquet files, manifests, and Iceberg metadata.
 
+## Data architecture
+
+The project uses three logical stages:
+
+```text
+Raw → Staging → Analytics
+```
+
+### Raw
+
+Keeps historical source records with as little transformation as possible:
+
+- `raw.customers`
+- `raw.plans`
+- `raw.subscription_events`
+- `raw.payments`
+
+This layer preserves received data and allows downstream transformations to be
+reprocessed. Some relations in this list represent the target design and might
+not be implemented yet.
+
+### Staging
+
+Applies light normalization while keeping data close to the source grain:
+
+- `staging.stg_customers`
+- `staging.stg_plans`
+- `staging.stg_subscription_events`
+- `staging.stg_payments`
+
+This layer is responsible for:
+
+- type casting and standardization;
+- column renaming;
+- basic validation;
+- exact duplicate handling;
+- technical metadata normalization.
+
+These relations can be views and do not necessarily require a separate
+physical storage layer. When persistence, technical history, or incremental
+processing is useful, they can also be materialized as Iceberg tables.
+Currently, `stg_subscription_events` is an incremental table.
+
+### Analytics
+
+Contains consumption-ready dimensions, facts, snapshots, and aggregates:
+
+- `analytics.dim_customer_scd2`
+- `analytics.dim_plan_scd2`
+- `analytics.fct_subscription_event`
+- `analytics.fct_payment`
+- `analytics.fct_subscription_daily_snapshot`
+- `analytics.agg_monthly_recurring_revenue`
+- `analytics.agg_customer_churn_monthly`
+
+This separation keeps the architecture simple while making the role of each
+model type explicit.
+
 ## Prerequisites
 
 - Docker with Docker Compose
