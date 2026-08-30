@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS lakehouse.raw.plans (
     max_users INTEGER,
     plan_status VARCHAR,
     created_at TIMESTAMP(6) WITH TIME ZONE,
-    updated_at TIMESTAMP(6) WITH TIME ZONE
+    updated_at TIMESTAMP(6) WITH TIME ZONE,
+    _ingested_at TIMESTAMP(6) WITH TIME ZONE
 )
 WITH (
     format = 'PARQUET',
@@ -80,7 +81,8 @@ WHEN NOT MATCHED THEN
         max_users,
         plan_status,
         created_at,
-        updated_at
+        updated_at,
+        _ingested_at
     )
     VALUES (
         source.plan_id,
@@ -92,7 +94,8 @@ WHEN NOT MATCHED THEN
         source.max_users,
         source.plan_status,
         source.created_at,
-        source.updated_at
+        source.updated_at,
+        cast(CURRENT_TIMESTAMP as timestamp(6) with time zone)
     );
 
 CREATE TABLE IF NOT EXISTS lakehouse.raw.customers (
@@ -104,7 +107,8 @@ CREATE TABLE IF NOT EXISTS lakehouse.raw.customers (
     city VARCHAR,
     customer_status VARCHAR,
     created_at TIMESTAMP(6) WITH TIME ZONE,
-    updated_at TIMESTAMP(6) WITH TIME ZONE
+    updated_at TIMESTAMP(6) WITH TIME ZONE,
+    _ingested_at TIMESTAMP(6) WITH TIME ZONE
 )
 WITH (
     format = 'PARQUET',
@@ -179,7 +183,8 @@ WHEN NOT MATCHED THEN
         city,
         customer_status,
         created_at,
-        updated_at
+        updated_at,
+        _ingested_at
     )
     VALUES (
         source.customer_id,
@@ -190,5 +195,6 @@ WHEN NOT MATCHED THEN
         source.city,
         source.customer_status,
         source.created_at,
-        source.updated_at
+        source.updated_at,
+        cast(CURRENT_TIMESTAMP as timestamp(6) with time zone)
     );

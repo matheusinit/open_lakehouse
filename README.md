@@ -40,7 +40,8 @@ transformação:
 
 Essa camada preserva os dados recebidos e permite reprocessar as transformações
 posteriores. Algumas relações da lista representam o desenho alvo e podem ainda
-não estar implementadas.
+não estar implementadas. Todas as tabelas raw possuem `_ingested_at`, que
+registra quando cada linha entrou pela primeira vez no lakehouse.
 
 ### Staging
 
@@ -185,6 +186,9 @@ Carregue ou atualize as tabelas Iceberg de referência `raw.plans` e
 docker compose exec -T trino trino \
   < infra/trino/load-reference-data.sql
 ```
+
+O script `infra/trino/add-raw-ingestion-metadata.sql` adiciona e preenche
+`_ingested_at` de forma idempotente nas tabelas raw existentes.
 
 ## Parar e limpar
 

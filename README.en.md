@@ -39,7 +39,8 @@ Keeps historical source records with as little transformation as possible:
 
 This layer preserves received data and allows downstream transformations to be
 reprocessed. Some relations in this list represent the target design and might
-not be implemented yet.
+not be implemented yet. Every raw table includes `_ingested_at`, recording when
+each row first entered the lakehouse.
 
 ### Staging
 
@@ -182,6 +183,9 @@ Iceberg tables with:
 docker compose exec -T trino trino \
   < infra/trino/load-reference-data.sql
 ```
+
+The `infra/trino/add-raw-ingestion-metadata.sql` script idempotently adds and
+backfills `_ingested_at` in existing raw tables.
 
 ## Stop and clean up
 
