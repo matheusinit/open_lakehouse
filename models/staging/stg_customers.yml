@@ -3,8 +3,8 @@ version: 2
 models:
   - name: stg_customers
     description: >-
-      Clean, one-to-one customer records incrementally merged whenever the
-      current raw customers Iceberg snapshot changes.
+      Clean, one-to-one customer records incrementally merged using the raw
+      ingestion timestamp with a two-day lookback window.
     columns:
       - name: customer_id
         description: Unique customer identifier and merge key.
@@ -30,12 +30,11 @@ models:
       - name: updated_at
         data_tests:
           - not_null
-      - name: source_snapshot_id
-        description: Iceberg snapshot ID from which this row was last loaded.
+      - name: _ingested_at
+        description: Timestamp when the raw record first entered the lakehouse.
         data_tests:
           - not_null
-      - name: source_snapshot_committed_at
-        description: Commit timestamp of the source Iceberg snapshot.
+      - name: _processed_at
+        description: Timestamp when last processed the staging row.
         data_tests:
           - not_null
-

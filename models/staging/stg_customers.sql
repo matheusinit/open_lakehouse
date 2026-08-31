@@ -7,21 +7,22 @@
     )
 }}
 
--- todo: change the watermark of incremental load from raw layer by using _ingested_at with lookback window
--- to get late arriving data
+with model_execution as (
+    select cast(current_timestamp as timestamp(6) with time zone) as processed_at
+),
 
-with current_source_snapshot as (
-    select
-        history.snapshot_id as source_snapshot_id,
-        cast(
-            snapshots.committed_at as timestamp(6) with time zone
-        ) as source_snapshot_committed_at
-    from lakehouse.raw."customers$history" as history
-    inner join lakehouse.raw."customers$snapshots" as snapshots
-        on history.snapshot_id = snapshots.snapshot_id
-    where history.is_current_ancestor
-    order by history.made_current_at desc
-    limit 1
+source_customers as (
+    select *
+    from {{ source('raw', 'customers') }}
+    {% if is_incremental() %}
+    where _ingested_at >= (
+        select coalesce(
+            max(_ingested_at) - interval '2' day,
+            timestamp '1970-01-01 00:00:00 UTC'
+        )
+        from {{ this }}
+    )
+    {% endif %}
 ),
 
 cleaned_source as (
@@ -34,30 +35,12 @@ cleaned_source as (
         nullif(trim(city), '') as city,
         lower(nullif(trim(customer_status), '')) as customer_status,
         cast(created_at as timestamp(6) with time zone) as created_at,
-        cast(updated_at as timestamp(6) with time zone) as updated_at
-    from {{ source('raw', 'customers') }}
-),
-
-{% if is_incremental() %}
-processed_snapshot as (
-    select max(source_snapshot_id) as source_snapshot_id
-    from {{ this }}
-),
-{% endif %}
-
-customers_to_process as (
-    select
-        source.*,
-        snapshot.source_snapshot_id,
-        snapshot.source_snapshot_committed_at
-    from cleaned_source as source
-    cross join current_source_snapshot as snapshot
-    {% if is_incremental() %}
-    cross join processed_snapshot as processed
-    where processed.source_snapshot_id is null
-       or snapshot.source_snapshot_id <> processed.source_snapshot_id
-    {% endif %}
+        cast(updated_at as timestamp(6) with time zone) as updated_at,
+        cast(_ingested_at as timestamp(6) with time zone) as _ingested_at,
+        execution.processed_at as _processed_at
+    from source_customers
+    cross join model_execution as execution
 )
 
 select *
-from customers_to_process
+from cleaned_source
