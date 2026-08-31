@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: stg_plans
+    description: >-
+      Clean, one-to-one plan records incrementally merged using the raw
+      ingestion timestamp with a two-day lookback window.
+    columns:
+      - name: plan_id
+        description: Unique plan identifier and merge key.
+        data_tests:
+          - not_null
+          - unique
+      - name: plan_name
+        data_tests:
+          - not_null
+      - name: billing_cycle
+        data_tests:
+          - not_null
+      - name: price
+        data_tests:
+          - not_null
+      - name: currency
+        data_tests:
+          - not_null
+      - name: max_users
+        data_tests:
+          - not_null
+      - name: plan_status
+        data_tests:
+          - not_null
+      - name: created_at
+        data_tests:
+          - not_null
+      - name: updated_at
+        data_tests:
+          - not_null
+      - name: _ingested_at
+        description: Timestamp when the raw record first entered the lakehouse.
+        data_tests:
+          - not_null
+      - name: _processed_at
+        description: Timestamp when dbt last processed the staging row.
+        data_tests:
+          - not_null

@@ -20,6 +20,20 @@ sources:
             description: Timestamp when the raw record first entered the lakehouse.
             data_tests:
               - not_null
+      - name: plans
+        description: Historical subscription plan records.
+        columns:
+          - name: plan_id
+            data_tests:
+              - not_null
+              - unique
+          - name: updated_at
+            data_tests:
+              - not_null
+          - name: _ingested_at
+            description: Timestamp when the raw record first entered the lakehouse.
+            data_tests:
+              - not_null
       - name: subscription_events
         description: Subscription lifecycle and payment events.
         columns:
