@@ -240,6 +240,16 @@ The `stg_customers` model also maintains a one-to-one grain and uses
 days before the greatest `_ingested_at` already loaded and merges them by
 `customer_id`. This window safely reprocesses recent or late-arriving records.
 
+The `customers_snapshot` dbt snapshot maintains the Type 2 SCD history of
+`stg_customers` in the `snapshots` schema, using `customer_id` as its natural
+key and `updated_at` to detect changes. The `analytics.dim_customer_scd2` view
+exposes each version with `customer_key`, `valid_from`, `valid_to`, and
+`is_current`. Run the complete chain with:
+
+```sh
+uv run dbt build --profiles-dir . --select +dim_customer_scd2
+```
+
 ## Security notice
 
 This environment does not enable TLS or Trino authentication and publishes

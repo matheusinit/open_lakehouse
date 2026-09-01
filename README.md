@@ -243,6 +243,16 @@ watermark incremental. Em cada execução, ele relê os registros desde dois dia
 antes do maior `_ingested_at` já carregado e faz `MERGE` por `customer_id`. Essa
 janela permite reprocessar com segurança registros recentes ou atrasados.
 
+O snapshot dbt `customers_snapshot` mantém o histórico SCD Tipo 2 de
+`stg_customers` no schema `snapshots`, usando `customer_id` como chave natural e
+`updated_at` para detectar mudanças. A view
+`analytics.dim_customer_scd2` expõe cada versão com `customer_key`,
+`valid_from`, `valid_to` e `is_current`. Execute toda a cadeia com:
+
+```sh
+uv run dbt build --profiles-dir . --select +dim_customer_scd2
+```
+
 ## Aviso de segurança
 
 Este ambiente não habilita TLS nem autenticação no Trino e publica credenciais

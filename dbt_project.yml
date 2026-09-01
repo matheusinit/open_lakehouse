@@ -19,3 +19,9 @@ models:
     +materialized: table
     staging:
       +schema: staging
+    analytics:
+      +schema: analytics
+
+snapshots:
+  open_lakehouse:
+    +target_schema: snapshots
