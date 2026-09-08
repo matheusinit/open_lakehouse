@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: dim_customer
+    description: >-
+      Histórico cadastral dos clientes. Permite analisar os atributos de cada
+      cliente conforme eram válidos em diferentes períodos, preservando as
+      versões anteriores quando seus dados mudam.
+    columns:
+      - name: customer_key
+        description: Identificador único de uma versão cadastral do cliente.
+        data_tests:
+          - not_null
+          - unique
+      - name: customer_id
+        description: Identificador do cliente, compartilhado por todas as suas versões cadastrais.
+        data_tests:
+          - not_null
+      - name: customer_name
+        description: Nome do cliente durante o período de vigência da versão.
+      - name: email
+        description: Endereço de e-mail do cliente durante o período de vigência da versão.
+      - name: country
+        description: Código do país de residência do cliente.
+      - name: state
+        description: Código do estado de residência do cliente.
+      - name: city
+        description: Cidade de residência do cliente.
+      - name: customer_status
+        description: Situação cadastral do cliente durante o período, como ativo ou inativo.
+      - name: created_at
+        description: Data e hora em que o cliente foi cadastrado originalmente.
+      - name: updated_at
+        description: Data e hora da alteração cadastral que originou esta versão.
+      - name: valid_from
+        description: Início do período em que esta versão cadastral é válida.
+        data_tests:
+          - not_null
+      - name: valid_to
+        description: Fim do período de validade da versão; fica vazio para a versão atual.
+      - name: is_current
+        description: Indica se esta é a versão cadastral atualmente válida para o cliente.
+        data_tests:
+          - not_null
