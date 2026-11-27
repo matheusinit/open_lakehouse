@@ -12,6 +12,16 @@
         ],
         surrogate_key = 'customer_sk',
         invalidate_hard_deletes = true
+
+        -- Custom column names for SCD2
+        -- scd2_columns = {
+        --     'valid_from': 'start_date',
+        --     'valid_to': 'end_date',
+        --     'is_current': 'current_flag',
+        --     'attribute_hash': 'row_hash',
+        --     'created_at': 'created_timestamp',
+        --     'updated_at': 'updated_timestamp'
+        -- }
     )
 }}
 
